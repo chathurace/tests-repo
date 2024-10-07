@@ -1,0 +1,12 @@
+package abc;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class ABCMart {
+    public static void main(String[] args) {
+        System.out.println("Started ABC Mart services.");
+        SpringApplication.run(ABCMart.class, args);
+    }
+}

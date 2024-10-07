@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="payments_seq" trace="enable" xmlns="http://ws.apache.org/ns/synapse">
+	<log category="INFO" level="headers">
+		<property name="h1" expression="get-property('transport','T20')" />
+		<property name="tracepid" expression="get-property('transport','traceparent')" />
+	</log>
+	<property name="traceprop" scope="default" type="STRING"
+		expression="get-property('transport','traceparent')" />
+	<script language="js"><![CDATA[
+        var traceparent = mc.getProperty('traceprop');
+        if (traceparent != null) {
+            var parts = traceparent.split('-');
+            if (parts.length == 4) {
+                var flag1 = parts[0];
+                var traceId = parts[1];
+                var parentSpanId = parts[2];
+                var flag2 = parts[3];
+                var newHeader = traceId + ":" + parentSpanId + ":0:1";
+                mc.setProperty('uberTraceId', newHeader);
+            }
+        }
+    ]]></script>
+    <header name="uber-trace-id" action="set" scope="transport" expression="get-property('uberTraceId')" />
+	<call>
+		<endpoint key="crmEp" />
+		<target type="body" />
+	</call>
+	<respond />
+</sequence>

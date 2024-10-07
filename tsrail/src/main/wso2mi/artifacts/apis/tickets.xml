@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api context="/tickets" name="tickets" xmlns="http://ws.apache.org/ns/synapse">
+	<resource methods="GET" url-mapping="/cities">
+		<inSequence>
+			<log category="INFO" level="simple">
+				<property name="Stage" value="Get tickets" />
+				<property name="resource" value="cities" />
+			</log>
+			<payloadFactory media-type="json" template-type="default">
+				<format>["Brisbane",
+					"Melbourne"]</format>
+				<args>
+				</args>
+			</payloadFactory>
+			<respond />
+		</inSequence>
+		<faultSequence>
+		</faultSequence>
+	</resource>
+	<resource methods="POST" url-mapping="/tickets">
+		<inSequence>
+			<log category="INFO" level="full">
+				<property name="Stage" value="Book tickets" />
+			</log>
+			<property name="start" scope="default" type="STRING" expression="start" />
+			<payloadFactory media-type="json" template-type="default">
+				<format>{
+					"status":"booked", "location":"TBD" }</format>
+				<args>
+				</args>
+			</payloadFactory>
+			<log category="INFO" level="full" />
+			<respond />
+		</inSequence>
+		<faultSequence>
+		</faultSequence>
+	</resource>
+	<resource methods="POST" uri-template="/payments" inSequence="payments_seq">
+
+		<faultSequence>
+		</faultSequence>
+	</resource>
+</api>

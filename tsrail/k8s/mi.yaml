@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tsrail
+  labels:
+    app: tsrail
+    vendor: wso2
+    product: mi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tsrail
+  template:
+    metadata:
+      labels:
+        app: tsrail
+        vendor: wso2
+        product: mi
+    spec:
+      containers:
+      - name: tsrail-container
+        image: tsrail:1.0.0
+        ports:
+        - containerPort: 8290
+        volumeMounts:
+        - name: log4j2-config-volume
+          mountPath: /home/wso2carbon/wso2mi-4.2.0/conf/log4j2.properties
+          subPath: log4j2.properties
+      volumes:
+      - name: log4j2-config-volume
+        configMap:
+          name: log4j2-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tsrail-service
+spec:
+  selector:
+    app: tsrail
+  ports:
+    - protocol: TCP
+      port: 8290
+      targetPort: 8290
+  type: ClusterIP

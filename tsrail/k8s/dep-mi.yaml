@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wso2-mi-deployment
+  labels:
+    vendor: wso2
+    product: mi
+    app: wso2-mi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wso2-mi
+  template:
+    metadata:
+      labels:
+        app: wso2-mi
+    spec:
+      containers:
+      - name: wso2-mi-container
+        image: tsrail-j:1.0.0
+        ports:
+        - containerPort: 8290
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wso2-mi-service
+spec:
+  selector:
+    app: wso2-mi
+  ports:
+    - protocol: TCP
+      port: 8290
+      targetPort: 8290
+  type: ClusterIP
